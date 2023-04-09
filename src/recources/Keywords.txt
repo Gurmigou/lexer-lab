@@ -1,0 +1,64 @@
+// Control Structures and Flow Control
+if
+else
+while
+do
+for
+yield
+return
+throw
+try
+catch
+finally
+until
+to
+
+// Pattern Matching
+case
+match
+
+// Types and Type-related Keywords
+abstract
+class
+trait
+type
+sealed
+extends
+with
+final
+
+// Access Modifiers
+private
+protected
+
+// Method and Value Definitions
+def
+val
+var
+
+// Object-related Keywords
+object
+new
+this
+super
+
+// Boolean Literals
+true
+false
+
+// Special Value for Null References
+null
+
+// Imports and Packages
+import
+package
+
+// Overriding and Implementing Members
+override
+implicit
+
+// Existential Types
+forSome
+
+// Lazy Initialization
+lazy

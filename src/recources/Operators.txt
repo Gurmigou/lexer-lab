@@ -1,0 +1,65 @@
+// Math operators
++
+-
+*
+/
+%
+
+// Math + logical operators
+==
+!=
+>
+<
+>=
+<=
+
+// Boolean operators
+&&
+||
+!
+
+// Assignment operators
+=
++=
+-=
+*=
+/=
+%=
+
+// Bitwise operators
+&
+|
+^
+~
+<<
+>>
+>>>
+<<=
+>>=
+&=
+^=
+|=
+>>>=
+
+// Type
+:
+
+// Other
+<-
+->
+=>
+::
++:
+++
+:++
+
+.
+,
+;
+(
+)
+[
+]
+{
+}
+s
