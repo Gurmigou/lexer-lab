@@ -62,3 +62,18 @@ forSome
 
 // Lazy Initialization
 lazy
+
+// Types
+Byte
+Short
+Int
+Long
+Float
+Double
+Boolean
+Char
+String
+Unit
+Null
+Any
+AnyRef

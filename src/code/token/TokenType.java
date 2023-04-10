@@ -1,5 +1,8 @@
 package code.token;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum TokenType {
     // Control Structures and Flow Control
     IF("if"),
@@ -65,6 +68,21 @@ public enum TokenType {
 
     // Lazy Initialization
     LAZY("lazy"),
+
+    // Types
+    Byte("Byte"),
+    Short("Short"),
+    Int("Int"),
+    Long("Long"),
+    Float("Float"),
+    Double("Double"),
+    Boolean("Boolean"),
+    Char("Char"),
+    String("String"),
+    Unit("Unit"),
+    Null("Null"),
+    Any("Any"),
+    AnyRef("AnyRef"),
 
     // --------------------------------------------
 
@@ -142,6 +160,21 @@ public enum TokenType {
     // Error
     INVALID_TOKEN("invalidToken");
 
+    private static final List<TokenType> operatorTokens;
+    private static final List<TokenType> keywordTokens;
+
+    static {
+        // Initialize operator tokens
+        operatorTokens = Arrays.stream(TokenType.values())
+                .filter(type -> type.ordinal() >= PLUS.ordinal() && type.ordinal() <= S_INTERPOLATOR.ordinal())
+                .toList();
+
+        // Initialize keyword tokens
+        keywordTokens = Arrays.stream(TokenType.values())
+                .filter(type -> type.ordinal() < PLUS.ordinal())
+                .toList();
+    }
+
     private final String name;
     private String operator;
 
@@ -160,5 +193,13 @@ public enum TokenType {
 
     public String getOperator() {
         return operator;
+    }
+
+    public static List<TokenType> getOperatorTokens() {
+        return operatorTokens;
+    }
+
+    public static List<TokenType> getKeywordTokens() {
+        return keywordTokens;
     }
 }
