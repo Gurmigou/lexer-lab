@@ -4,16 +4,13 @@ import code.lexer.state.AutomataState;
 import code.token.TokenType;
 import code.util.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 public class FiniteAutomata {
     private final AutomataState rootState;
 
-    public FiniteAutomata(List<TokenType> tokenTypeList, Function<TokenType, String> nameMapper) {
+    public FiniteAutomata(Set<TokenType> tokenTypeList, Function<TokenType, String> nameMapper) {
         this.rootState = new AutomataState();
         List<Pair<String, TokenType>> nameTokenTypeList = tokenTypeList.stream()
                 .map(token -> Pair.of(nameMapper.apply(token), token))
@@ -21,8 +18,8 @@ public class FiniteAutomata {
         initFiniteAutomataRecursively(rootState, nameTokenTypeList, 0);
     }
 
-    public Pair<TokenType, Integer> checkValue(String codeLine, int startPos) {
-        return checkValueHelper(rootState, codeLine, startPos);
+    public Pair<TokenType, Integer> findToken(String codeLine, int startPos) {
+        return findTokenHelper(rootState, codeLine, startPos);
     }
 
     public AutomataState getRootState() {
@@ -52,13 +49,13 @@ public class FiniteAutomata {
         }
     }
 
-    private Pair<TokenType, Integer> checkValueHelper(AutomataState state, String codeLine, int pos) {
+    private Pair<TokenType, Integer> findTokenHelper(AutomataState state, String codeLine, int pos) {
         if (codeLine.length() <= pos) {
             return Pair.of(state.getTokenType(), pos);
         }
         if (state.nextStateMap.containsKey(codeLine.charAt(pos))) {
             AutomataState nextState = state.nextStateMap.get(codeLine.charAt(pos));
-            return checkValueHelper(nextState, codeLine, pos + 1);
+            return findTokenHelper(nextState, codeLine, pos + 1);
         }
         return Pair.of(state.getTokenType(), pos);
     }

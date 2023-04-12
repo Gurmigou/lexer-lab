@@ -2,12 +2,15 @@ package code.util;
 
 // TODO refactor this util class
 public class CharsUtil {
+    private static final String UNIQUE_OPERATORS = "+-*/%(){}[]=<>^|&!?:$.,;";
+
     public static boolean isDigit(char c) {
-        return ('0' <= c && c <= '9');
+        return Character.isDigit(c);
     }
 
-    public static boolean isFirstIdentifierSymbol(char c) {
-        return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_';
+    // TODO maybe refactor
+    public static boolean isIdentifierSymbol(char c) {
+        return Character.isLetter(c);
     }
 
     public static boolean isDot(char c) {
@@ -22,18 +25,12 @@ public class CharsUtil {
         return c == '\t';
     }
 
-    public static boolean isPunctuation(char c) {
-        String punctuation = "";
-        return punctuation.indexOf(c) != -1;
-    }
-
     public static boolean isOperator(char c) {
-        String operators = "+-*/%^|&=<>!?:$.,;[]{}()";
-        return operators.indexOf(c) != -1;
+        return UNIQUE_OPERATORS.indexOf(c) != -1;
     }
 
     public static boolean isComment(char c1, char c2) {
-        return c2 == '-' && (c1 == '-' || c1 == '{');
+        return (c1 == '/' && c2 == '/') || (c1 == '/' && c2 == '*');
     }
 
     public static boolean isSingleQuote(char c) {
@@ -48,6 +45,7 @@ public class CharsUtil {
         return c == '[' || c == ']';
     }
 
+    // TODO maybe refactor
     public static boolean isArrow(char c1, char c2) {
         return (c1 == '-' || c1 == '=') && c2 == '>';
     }
@@ -56,7 +54,12 @@ public class CharsUtil {
         return c == '}';
     }
 
+    // TODO maybe refactor
     public static boolean isEndOfToken(char c) {
-        return isWhitespace(c) || isTab(c) || isPunctuation(c) || isOperator(c);
+        return isWhitespace(c) || isTab(c) || isOperator(c);
+    }
+
+    public static boolean isEscapeCharacter(char c) {
+        return c == 'b' || c == 't' || c == 'n' || c == 'f' || c == 'r' || c == '\"' || c == '\'' || c == '\\';
     }
 }

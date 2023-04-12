@@ -1,10 +1,10 @@
 package code.token;
 
-public class Token extends AbstractToken {
-    TokenType tokenType;
-    int symbolTableIndex;
+public class ProcessedToken extends AbstractToken {
+    private TokenType tokenType;
+    private int symbolTableIndex;
 
-    public Token(int row, int column, TokenType tokenType, int symbolTableIndex) {
+    public ProcessedToken(int row, int column, TokenType tokenType, int symbolTableIndex) {
         super(row, column);
         this.tokenType = tokenType;
         this.symbolTableIndex = symbolTableIndex;
@@ -24,5 +24,10 @@ public class Token extends AbstractToken {
 
     public void setSymbolTableIndex(int symbolTableIndex) {
         this.symbolTableIndex = symbolTableIndex;
+    }
+
+    @Override
+    public String toString() {
+        return tokenType.toString() + " symbol table index: " + symbolTableIndex + " " + super.toString();
     }
 }

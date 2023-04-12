@@ -5,9 +5,11 @@ public enum LexerState {
     ERROR,
     SINGLE_LINE_COMMENT,
     MULTI_LINE_COMMENT,
+    MULTI_LINE_COMMENT_PRE_END,
     INTEGER,
-    FLOAT,
+    DOUBLE,
     CHAR,
     STRING,
+    BACK_SLASH,
     IDENTIFIER
 }

@@ -2,6 +2,8 @@ package code.token;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public enum TokenType {
     // Control Structures and Flow Control
@@ -83,6 +85,16 @@ public enum TokenType {
     Null("Null"),
     Any("Any"),
     AnyRef("AnyRef"),
+    BigInt("BigInt"),
+    BigDecimal("BigDecimal"),
+
+    // Values
+    ByteValue("Byte value"),
+    ShortValue("Short value"),
+    IntValue("Integer value"),
+    DoubleValue("Double value"),
+    StringValue("String value"),
+    CharValue("Character value"),
 
     // --------------------------------------------
 
@@ -157,22 +169,25 @@ public enum TokenType {
     WHITESPACE("whitespace"),
     TAB("tab"),
 
+    // Identifier
+    IDENTIFIER("Identifier"),
+
     // Error
     INVALID_TOKEN("invalidToken");
 
-    private static final List<TokenType> operatorTokens;
-    private static final List<TokenType> keywordTokens;
+    private static final Set<TokenType> operatorTokens;
+    private static final Set<TokenType> keywordTokens;
 
     static {
         // Initialize operator tokens
         operatorTokens = Arrays.stream(TokenType.values())
                 .filter(type -> type.ordinal() >= PLUS.ordinal() && type.ordinal() <= S_INTERPOLATOR.ordinal())
-                .toList();
+                .collect(Collectors.toSet());
 
         // Initialize keyword tokens
         keywordTokens = Arrays.stream(TokenType.values())
                 .filter(type -> type.ordinal() < PLUS.ordinal())
-                .toList();
+                .collect(Collectors.toSet());
     }
 
     private final String name;
@@ -195,11 +210,21 @@ public enum TokenType {
         return operator;
     }
 
-    public static List<TokenType> getOperatorTokens() {
+    public static Set<TokenType> getOperatorTokens() {
         return operatorTokens;
     }
 
-    public static List<TokenType> getKeywordTokens() {
+    public static Set<TokenType> getKeywordTokens() {
         return keywordTokens;
+    }
+
+    @Override
+    public String toString() {
+        String token = "Token: " + this.name();
+        if (operatorTokens.contains(this)) {
+            return token + " (" + this.operator + ")  | ";
+        } else {
+            return token + " (" + this.name + ")  | ";
+        }
     }
 }

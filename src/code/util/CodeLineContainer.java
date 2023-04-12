@@ -5,18 +5,23 @@ public class CodeLineContainer {
     private int column;
     private String codeLine;
 
-    public CodeLineContainer(int row, int column, String codeLine) {
-        this.row = row;
-        this.column = column;
-        this.codeLine = codeLine;
+    public CodeLineContainer() {
     }
 
-    public boolean isEnded(int pos) {
-        return codeLine.length() <= column + pos;
+    public boolean isEnded(int shift) {
+        return column + shift >= codeLine.length();
     }
 
-    public char nextSymbol(int pos) {
-        return codeLine.charAt(column + pos);
+    public boolean isEnded() {
+        return isEnded(0);
+    }
+
+    public char getNextSymbol(int shift) {
+        return codeLine.charAt(column + shift);
+    }
+
+    public char getNextSymbol() {
+        return getNextSymbol(0);
     }
 
     public int getRow() {
@@ -29,6 +34,14 @@ public class CodeLineContainer {
 
     public int getColumn() {
         return column;
+    }
+
+    public void incrementRow() {
+        this.row++;
+    }
+
+    public void incrementColumn() {
+        this.column++;
     }
 
     public void setColumn(int column) {

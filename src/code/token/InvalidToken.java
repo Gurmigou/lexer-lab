@@ -1,13 +1,14 @@
 package code.token;
 
 public class InvalidToken extends AbstractToken {
-    private String invalidSymbol;
+    public static final String INVALID_TOKEN_MSG = "Invalid token: ";
     private String errorMessage;
+    private String invalidSymbol;
 
-    public InvalidToken(int row, int column, String invalidSymbol, String errorMessage) {
+    public InvalidToken(int row, int column, String errorMessage, String invalidSymbol) {
         super(row, column);
-        this.invalidSymbol = invalidSymbol;
         this.errorMessage = errorMessage;
+        this.invalidSymbol = invalidSymbol;
     }
 
     public String getInvalidSymbol() {
