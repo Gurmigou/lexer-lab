@@ -12,25 +12,27 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static code.util.CharsUtil.*;
 
 public class Lexer {
     private final FiniteAutomata operatorsAutomata;
     private final FiniteAutomata keywordsAutomata;
-    private LexerState lexerState = LexerState.DEFAULT;
+    private final LexerStateManager lexerState;
 
     private final List<String> table;
     private final List<ProcessedToken> processedTokens;
     private final List<InvalidToken> errorTokens;
-
     private final LexerCache lexerCache;
-
     private CodeLineContainer container;
+
+    private final Set<LexerState> nonBackStates = Set.of(LexerState.PARAMETER, LexerState.INTERPOLATION, LexerState.EXPRESSION);
 
     public Lexer() {
         this.operatorsAutomata = new FiniteAutomata(TokenType.getOperatorTokens(), TokenType::getOperator);
         this.keywordsAutomata = new FiniteAutomata(TokenType.getKeywordTokens(), TokenType::getName);
+        this.lexerState = new LexerStateManager();
         this.table = new ArrayList<>();
         this.processedTokens = new ArrayList<>();
         this.errorTokens = new ArrayList<>();
@@ -55,8 +57,13 @@ public class Lexer {
     }
 
     private void processNextToken() {
-        if (lexerState != LexerState.DEFAULT && lexerState != LexerState.PARAMETER) {
+        if (lexerState.getCurState() != LexerState.DEFAULT && !lexerState.isInStateChain(LexerState.PARAMETER)) {
             processMultipleLines();
+            return;
+        }
+
+        if (lexerState.getCurState() == LexerState.STRING) {
+            processDoubleQuote();
             return;
         }
 
@@ -96,19 +103,27 @@ public class Lexer {
         int tokenEndPos = tokenPair.getSecond();
 
         if (tokenType == TokenType.OPEN_PARENTHESIS)
-            this.lexerState = LexerState.PARAMETER;
-        else if (this.lexerState == LexerState.PARAMETER && tokenType == TokenType.CLOSE_PARENTHESIS)
-            this.lexerState = LexerState.DEFAULT;
+            this.lexerState.transitToNextState(LexerState.PARAMETER);
+        else if (this.lexerState.getCurState() == LexerState.PARAMETER && tokenType == TokenType.CLOSE_PARENTHESIS)
+            this.lexerState.backToPrevState();
 
-        if (tokenType == TokenType.INVALID_TOKEN) {
+        if (this.lexerState.getCurState() == LexerState.INTERPOLATION && tokenType == TokenType.OPEN_BRACE)
+            this.lexerState.transitToNextState(LexerState.EXPRESSION);
+
+        if (tokenType == TokenType.INVALID_TOKEN)
             processError(tokenEndPos - container.getColumn());
-        } else {
+        else
             addProcessedToken(tokenType, tokenEndPos - container.getColumn());
+
+        if (this.lexerState.getCurState() == LexerState.EXPRESSION && tokenType == TokenType.CLOSE_BRACE) {
+            this.lexerState.backToPrevState();
+            if (this.lexerState.getCurState() == LexerState.INTERPOLATION)
+                this.lexerState.transitToNextState(LexerState.STRING);
         }
     }
 
     private void processSingleQuote() {
-        this.lexerState = LexerState.CHAR;
+        this.lexerState.transitToNextState(LexerState.CHAR);
         char next = container.getShifted(1);
         if (next == '\\') {
             // Handling escaped characters
@@ -125,27 +140,51 @@ public class Lexer {
     }
 
     private void processDoubleQuote() {
-        this.lexerState = LexerState.STRING;
-
-        char cur;
         int pos = 0;
+        char cur;
+
+        if (this.lexerState.getCurState() == LexerState.INTERPOLATION)
+            addProcessedToken(TokenType.DOUBLE_QUOTE, 1);
+        else if (this.lexerState.getCurState() != LexerState.STRING)
+            pos++;
+
+        this.lexerState.transitToNextStateIfNotIn(LexerState.STRING);
 
         while (!container.isEnded(pos + 1)) {
-            pos++;
             cur = container.getShifted(pos);
-            if (lexerState == LexerState.STRING) {
+            if (lexerState.getCurState() == LexerState.STRING) {
                 if (cur == '\\') {
-                    this.lexerState = LexerState.BACK_SLASH;
+                    this.lexerState.transitToNextState(LexerState.BACK_SLASH);
                 } else if (cur == '\"') {
-                    addProcessedToken(TokenType.StringValue, pos + 1);
+                    if (!this.lexerState.isInStateChain(LexerState.INTERPOLATION) || this.lexerState.isInStateChain(LexerState.EXPRESSION)) {
+                        addProcessedToken(TokenType.StringValue, pos + 1);
+                    } else {
+                        int stringTokenLength = pos + 1;
+
+                        if (stringTokenLength > 1)
+                            addProcessedToken(TokenType.StringValue, pos);
+
+                        addProcessedToken(TokenType.DOUBLE_QUOTE, 1);
+                        this.lexerState.backToPrevState();
+                    }
+                    return;
+                } else if (this.lexerState.isInStateChain(LexerState.INTERPOLATION) && cur == '$') {
+                    addProcessedToken(TokenType.StringValue, pos);
+                    addProcessedToken(TokenType.OPEN_EXPRESSION, 1);
+                    this.lexerState.transitToNextStateIfNotIn(LexerState.INTERPOLATION);
                     return;
                 }
-            } else if (lexerState == LexerState.BACK_SLASH) {
-                this.lexerState = LexerState.STRING;
+            } else if (lexerState.getCurState() == LexerState.BACK_SLASH) {
+                this.lexerState.backToPrevState();
             }
+            pos++;
         }
 
-        processError(0, "Missing ending double quote.");
+        if (container.getShifted(pos) == '\"') {
+            addProcessedToken(TokenType.StringValue, pos + 1);
+        } else {
+            processError(0, "Missing ending double quote.");
+        }
     }
 
     private void processIdentifier() {
@@ -154,9 +193,17 @@ public class Lexer {
         while (!container.isEnded(pos + 1)) {
             pos++;
             cur = container.getShifted(pos);
-            if (isEndOfToken(cur)) {
-                var tokenPair = keywordsAutomata.findToken(container.getCodeLine(),
-                        container.getColumn());
+            if (isEndOfToken(cur) || isDoubleQuote(cur)) {
+                if (isDoubleQuote(cur)) {
+                    String token = container.getCodeLine().substring(container.getColumn(), container.getColumn() + pos).trim();
+                    if (token.equals(TokenType.S_INTERPOLATOR.getOperator())) {
+                        addProcessedToken(TokenType.S_INTERPOLATOR, 1);
+                        this.lexerState.transitToNextStateIfNotIn(LexerState.INTERPOLATION);
+                        return;
+                    }
+                }
+
+                var tokenPair = keywordsAutomata.findToken(container.getCodeLine(), container.getColumn());
                 TokenType tokenType = tokenPair.getFirst();
 
                 // means that the Lexer has found an identifier
@@ -165,6 +212,11 @@ public class Lexer {
                 } else {
                     addProcessedToken(tokenType, pos);
                 }
+
+                if (this.lexerState.getCurState() == LexerState.INTERPOLATION) {
+                    this.lexerState.transitToNextState(LexerState.STRING);
+                }
+
                 return;
             }
         }
@@ -189,13 +241,13 @@ public class Lexer {
         }
 
         if (!container.isEnded(pos) && isDot(container.getShifted(pos))) {
-            this.lexerState = LexerState.DOUBLE;
+            this.lexerState.transitToNextState(LexerState.DOUBLE);
             pos++;
 
             while (!container.isEnded(pos) && isDigit(container.getShifted(pos))) {
                 pos++;
             }
-        } else if (lexerState != LexerState.PARAMETER && !container.isEnded(pos) && isComma(container.getShifted(pos))) {
+        } else if (!lexerState.isInStateChain(LexerState.PARAMETER) && !container.isEnded(pos) && isComma(container.getShifted(pos))) {
             processError(container.getColumn(), container.getColumn() + pos + 1,
                     "Invalid float value format.");
             return;
@@ -203,7 +255,7 @@ public class Lexer {
 
         if (container.isEnded(pos) || isEndOfToken(container.getShifted(pos))) {
             TokenType tokenType;
-            if (lexerState == LexerState.DOUBLE)
+            if (lexerState.getCurState() == LexerState.DOUBLE)
                 tokenType = TokenType.DoubleValue;
             else
                 tokenType = TokenType.IntValue;
@@ -214,7 +266,7 @@ public class Lexer {
     }
 
     private void processMultipleLines() {
-        if (lexerState == LexerState.MULTI_LINE_COMMENT) {
+        if (lexerState.getCurState() == LexerState.MULTI_LINE_COMMENT) {
             processMultilineComment();
         } else {
             processError(0);
@@ -232,7 +284,7 @@ public class Lexer {
     }
 
     private void processMultilineComment() {
-        this.lexerState = LexerState.MULTI_LINE_COMMENT;
+        this.lexerState.transitToNextState(LexerState.MULTI_LINE_COMMENT);
 
         char cur;
         int pos = 0;
@@ -241,9 +293,9 @@ public class Lexer {
             pos++;
             cur = container.getShifted(pos);
 
-            if (lexerState == LexerState.MULTI_LINE_COMMENT) {
+            if (lexerState.getCurState() == LexerState.MULTI_LINE_COMMENT) {
                 if (cur == '*') {
-                    this.lexerState = LexerState.MULTI_LINE_COMMENT_PRE_END; // requires also '/' symbol
+                    this.lexerState.transitToNextState(LexerState.MULTI_LINE_COMMENT_PRE_END); // requires also '/' symbol
                 }
             } else {
                 if (cur == '/') {
@@ -251,7 +303,7 @@ public class Lexer {
                     return;
                 } else {
                     // TODO maybe required changes
-                    this.lexerState = LexerState.MULTI_LINE_COMMENT;
+                    this.lexerState.backToPrevState();
                 }
             }
         }
@@ -262,11 +314,11 @@ public class Lexer {
         lexerCache.add(container.getCodeLine().substring(container.getColumn(),
                 container.getColumn() + pos));
         container.setColumn(container.getColumn() + pos + 1);
-        this.lexerState = LexerState.MULTI_LINE_COMMENT;
+        this.lexerState.transitToNextStateIfNotIn(LexerState.MULTI_LINE_COMMENT);
     }
 
     private void processError(int pos, String... msg) {
-        this.lexerState = LexerState.ERROR;
+        this.lexerState.transitToNextState(LexerState.ERROR);
         char cur = container.getShifted(pos);
         while (isEndOfToken(cur) || !container.isEnded(pos + 1)) {
             pos++;
@@ -281,7 +333,7 @@ public class Lexer {
     }
 
     private void processError(int start, int end, String msg) {
-        this.lexerState = LexerState.ERROR;
+        this.lexerState.transitToNextState(LexerState.ERROR);
         String invalidToken = container.getCodeLine().substring(start, end);
 
         InvalidToken error = new InvalidToken(container.getRow(), container.getColumn(),
@@ -292,7 +344,7 @@ public class Lexer {
 
     private void processErrorCommon(int start) {
         this.container.setColumn(start);
-        this.lexerState = LexerState.DEFAULT;
+        this.lexerState.backToPrevState();
     }
 
     private void addProcessedToken(TokenType tokenType, int tokenLength) {
@@ -309,14 +361,18 @@ public class Lexer {
     }
 
     private void addProcessedTokenHelper(TokenType tokenType, int tokenLength, String tableItem) {
+        if (tokenLength <= 0)
+            return;
+
         ProcessedToken token = new ProcessedToken(container.getRow(), container.getColumn(),
                 tokenType, this.table.size());
         this.table.add(tableItem);
         container.setColumn(container.getColumn() + tokenLength);
         this.processedTokens.add(token);
 
-        if (this.lexerState != LexerState.PARAMETER)
-            this.lexerState = LexerState.DEFAULT;
+        if (!nonBackStates.contains(this.lexerState.getCurState())) {
+            this.lexerState.backToPrevState();
+        }
     }
 
     public List<String> getTable() {

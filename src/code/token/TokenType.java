@@ -166,7 +166,11 @@ public enum TokenType {
     CLOSE_BRACKET("closeBracket", "]"),
     OPEN_BRACE("openBrace", "{"),
     CLOSE_BRACE("closeBrace", "}"),
+
+    // Interpolation
     S_INTERPOLATOR("sInterpolator", "s"),
+    OPEN_EXPRESSION("OpenExpression", "$"),
+    DOUBLE_QUOTE("DoubleQuote", "\""),
 
     // Format other
     SINGLE_LINE_COMMENT("singleLineComment"),
@@ -186,7 +190,7 @@ public enum TokenType {
     static {
         // Initialize operator tokens
         operatorTokens = Arrays.stream(TokenType.values())
-                .filter(type -> type.ordinal() >= PLUS.ordinal() && type.ordinal() <= S_INTERPOLATOR.ordinal())
+                .filter(type -> type.ordinal() >= PLUS.ordinal() && type.ordinal() < SINGLE_LINE_COMMENT.ordinal())
                 .collect(Collectors.toSet());
 
         // Initialize keyword tokens
