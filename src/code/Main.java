@@ -74,6 +74,4 @@ public class Main {
         stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         System.out.println(stringBuilder);
     }
-
 }
-

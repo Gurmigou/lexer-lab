@@ -1,8 +1,8 @@
 package code.token;
 
 public class ProcessedToken extends AbstractToken {
-    private TokenType tokenType;
-    private int symbolTableIndex;
+    private final TokenType tokenType;
+    private final int symbolTableIndex;
 
     public ProcessedToken(int row, int column, TokenType tokenType, int symbolTableIndex) {
         super(row, column);
@@ -14,17 +14,10 @@ public class ProcessedToken extends AbstractToken {
         return tokenType;
     }
 
-    public void setTokenType(TokenType tokenType) {
-        this.tokenType = tokenType;
-    }
-
     public int getSymbolTableIndex() {
         return symbolTableIndex;
     }
 
-    public void setSymbolTableIndex(int symbolTableIndex) {
-        this.symbolTableIndex = symbolTableIndex;
-    }
 
     @Override
     public String toString() {

@@ -151,7 +151,7 @@ public enum TokenType {
     // Other
     LEFT_ARROW("leftArrow", "<-"),
     RIGHT_ARROW("rightArrow", "->"),
-    LEFT_EQUAL_ARROW("leftEqualArrow", "=>"),
+    RIGHT_EQUAL_ARROW("rightEqualArrow", "=>"),
     TWO_COLON("twoColon", "::"),
     PLUS_COLON("plusColon", "+:"),
     PLUS_PLUS("plusPlus", "++"),

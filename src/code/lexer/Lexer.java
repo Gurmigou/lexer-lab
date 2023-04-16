@@ -77,8 +77,10 @@ public class Lexer {
             processNumber();
         else if (!container.isEnded(1) && isComment(cur, container.getShifted(1)))
             processComment();
+        else if (isBackTick(cur))
+            processIdentifier(true);
         else if (isIdentifierSymbol(cur))
-            processIdentifier();
+            processIdentifier(false);
         else if (isSingleQuote(cur))
             processSingleQuote();
         else if (isDoubleQuote(cur))
@@ -86,15 +88,14 @@ public class Lexer {
         else if (isOperator(cur))
             processOperator();
         else {
-            // TODO check next value in debugger
             char next = container.getShifted();
-            InvalidToken error = new InvalidToken(container.getRow(), container.getColumn(),
-                    "", String.valueOf(next));
+            InvalidToken error = new InvalidToken(container.getRow(), container.getColumn(), "", String.valueOf(next));
             this.errorTokens.add(error);
 
             container.incrementColumn();
         }
     }
+
 
     private void processOperator() {
         var tokenPair = operatorsAutomata.findToken(container.getCodeLine(),
@@ -127,7 +128,7 @@ public class Lexer {
         char next = container.getShifted(1);
         if (next == '\\') {
             // Handling escaped characters
-            if (isEscapeCharacter(next) && !container.isEnded(3) && container.getShifted(3) == '\'') {
+            if (isEscapeCharacter(next) && !container.isEnded(3) && isSingleQuote(container.getShifted(3))) {
                 addProcessedToken(TokenType.CharValue, 4);
             } else {
                 processError(1);
@@ -168,7 +169,7 @@ public class Lexer {
                         this.lexerState.backToPrevState();
                     }
                     return;
-                } else if (this.lexerState.isInStateChain(LexerState.INTERPOLATION) && cur == '$') {
+                } else if (this.lexerState.isInStateChain(LexerState.INTERPOLATION) && isDollar(cur)) {
                     addProcessedToken(TokenType.StringValue, pos);
                     addProcessedToken(TokenType.OPEN_EXPRESSION, 1);
                     this.lexerState.transitToNextStateIfNotIn(LexerState.INTERPOLATION);
@@ -180,20 +181,20 @@ public class Lexer {
             pos++;
         }
 
-        if (container.getShifted(pos) == '\"') {
+        if (isDoubleQuote(container.getShifted(pos))) {
             addProcessedToken(TokenType.StringValue, pos + 1);
         } else {
             processError(0, "Missing ending double quote.");
         }
     }
 
-    private void processIdentifier() {
+    private void processIdentifier(boolean inBackTick) {
         int pos = 0;
         char cur;
         while (!container.isEnded(pos + 1)) {
             pos++;
             cur = container.getShifted(pos);
-            if (isEndOfToken(cur) || isDoubleQuote(cur)) {
+            if ((!inBackTick && (isEndOfToken(cur) || isDoubleQuote(cur))) || (inBackTick && isBackTick(cur))) {
                 if (isDoubleQuote(cur)) {
                     String token = container.getCodeLine().substring(container.getColumn(), container.getColumn() + pos).trim();
                     if (token.equals(TokenType.S_INTERPOLATOR.getOperator())) {
@@ -201,6 +202,8 @@ public class Lexer {
                         this.lexerState.transitToNextStateIfNotIn(LexerState.INTERPOLATION);
                         return;
                     }
+                } else if (isBackTick(cur)) {
+                    pos++;
                 }
 
                 var tokenPair = keywordsAutomata.findToken(container.getCodeLine(), container.getColumn());
@@ -221,19 +224,23 @@ public class Lexer {
             }
         }
 
-        TokenType tokenType = keywordsAutomata.findToken(container.getCodeLine(), container.getColumn()).getFirst();
-        pos++;
-        if (tokenType == TokenType.INVALID_TOKEN)
-            addProcessedToken(TokenType.IDENTIFIER, pos);
-        else
-            addProcessedToken(tokenType, pos);
+        if (inBackTick && !isBackTick(container.getShifted(pos))) {
+            processError(pos, "Invalid backtick identifier. Missing closing backtick.");
+        } else {
+            TokenType tokenType = keywordsAutomata.findToken(container.getCodeLine(), container.getColumn()).getFirst();
+            pos++;
+            if (tokenType == TokenType.INVALID_TOKEN)
+                addProcessedToken(TokenType.IDENTIFIER, pos);
+            else
+                addProcessedToken(tokenType, pos);
+        }
     }
 
     private void processNumber() {
         int pos = 0;
 
         // handling signed number
-        if (container.getShifted() == '-' || container.getShifted() == '+')
+        if (isSign(container.getShifted()))
             pos++;
 
         while (!container.isEnded(pos) && isDigit(container.getShifted(pos))) {
@@ -302,7 +309,6 @@ public class Lexer {
                     addProcessedMultilineToken(TokenType.MULTI_LINE_COMMENT, pos + 1);
                     return;
                 } else {
-                    // TODO maybe required changes
                     this.lexerState.backToPrevState();
                 }
             }
@@ -320,7 +326,9 @@ public class Lexer {
     private void processError(int pos, String... msg) {
         this.lexerState.transitToNextState(LexerState.ERROR);
         char cur = container.getShifted(pos);
-        while (isEndOfToken(cur) || !container.isEnded(pos + 1)) {
+
+        // Todo: changed || to &&
+        while (isEndOfToken(cur) && !container.isEnded(pos + 1)) {
             pos++;
             cur = container.getShifted(pos);
         }

@@ -22,10 +22,6 @@ public class FiniteAutomata {
         return findTokenHelper(rootState, codeLine, startPos);
     }
 
-    public AutomataState getRootState() {
-        return rootState;
-    }
-
     private void initFiniteAutomataRecursively(AutomataState state, List<Pair<String, TokenType>> tokenTypeList, int pos) {
         Map<Character, List<Pair<String, TokenType>>> transitionsMap = new HashMap<>();
         for (Pair<String, TokenType> nameToken : tokenTypeList) {

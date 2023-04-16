@@ -7,7 +7,6 @@ import java.util.Map;
 
 public class AutomataState {
     private TokenType tokenType = TokenType.INVALID_TOKEN;
-    private char cur = '\0';
     public Map<Character, AutomataState> nextStateMap;
 
     public AutomataState() {
@@ -20,13 +19,5 @@ public class AutomataState {
 
     public void setTokenType(TokenType tokenType) {
         this.tokenType = tokenType;
-    }
-
-    public char getCur() {
-        return cur;
-    }
-
-    public void setCur(char cur) {
-        this.cur = cur;
     }
 }
