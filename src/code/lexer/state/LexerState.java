@@ -6,6 +6,7 @@ public enum LexerState {
     SINGLE_LINE_COMMENT,
     MULTI_LINE_COMMENT,
     MULTI_LINE_COMMENT_PRE_END,
+    PARAMETER,
     INTEGER,
     DOUBLE,
     CHAR,

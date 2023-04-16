@@ -20,6 +20,7 @@ public enum TokenType {
     FINALLY("finally"),
     UNTIL("until"),
     TO("to"),
+    BY("by"),
 
     // Pattern Matching
     CASE("case"),
@@ -143,6 +144,9 @@ public enum TokenType {
 
     // Type
     TYPE_COLON_OPERATOR("typeColonOperator", ":"),
+    UPPER_TYPE_BOUND("upperTypeBound", "<:"),
+    LOWER_TYPE_BOUND("lowerTypeBound", ">:"),
+    VIEW_BOUND("viewBound", "<%"),
 
     // Other
     LEFT_ARROW("leftArrow", "<-"),
@@ -153,6 +157,7 @@ public enum TokenType {
     PLUS_PLUS("plusPlus", "++"),
     COLON_PLUS_PLUS("colonPlusPlus", ":++"),
     DOT("dot", "."),
+    TWO_DOTS_RANGE("twoDotsRange", ".."),
     COMMA("comma", ","),
     SEMICOLON("semicolon", ";"),
     OPEN_PARENTHESIS("openParenthesis", "("),

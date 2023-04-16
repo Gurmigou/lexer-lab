@@ -27,6 +27,6 @@ public abstract class AbstractToken {
 
     @Override
     public String toString() {
-        return "| row: " + row + " | column: " + column;
+        return row + "|" + column;
     }
 }

@@ -26,4 +26,8 @@ public class InvalidToken extends AbstractToken {
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
+
+    public String getFullErrorMessage() {
+        return INVALID_TOKEN_MSG + "\"" + invalidSymbol + "\". " + errorMessage;
+    }
 }

@@ -4,16 +4,16 @@ import code.lexer.state.LexerState;
 import code.token.InvalidToken;
 import code.token.ProcessedToken;
 import code.token.TokenType;
-import code.util.CharsUtil;
 import code.util.CodeLineContainer;
 import code.util.LexerCache;
-import code.util.Pair;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+
+import static code.util.CharsUtil.*;
 
 public class Lexer {
     private final FiniteAutomata operatorsAutomata;
@@ -26,7 +26,7 @@ public class Lexer {
 
     private final LexerCache lexerCache;
 
-    private CodeLineContainer codeLineContainer;
+    private CodeLineContainer container;
 
     public Lexer() {
         this.operatorsAutomata = new FiniteAutomata(TokenType.getOperatorTokens(), TokenType::getOperator);
@@ -40,79 +40,84 @@ public class Lexer {
     public void processTokenInFile(String path) throws IOException {
         List<String> fileLines = Files.readAllLines(Path.of(path));
 
-        this.codeLineContainer = new CodeLineContainer();
+        this.container = new CodeLineContainer();
 
         for (String line : fileLines) {
-            codeLineContainer.setCodeLine(line);
-            codeLineContainer.setColumn(0);
+            container.setCodeLine(line);
+            container.setColumn(0);
 
-            while (!codeLineContainer.isEnded()) {
+            while (!container.isEnded()) {
                 processNextToken();
             }
 
-            codeLineContainer.incrementRow();
+            container.incrementRow();
         }
     }
 
     private void processNextToken() {
-        if (lexerState != LexerState.DEFAULT) {
+        if (lexerState != LexerState.DEFAULT && lexerState != LexerState.PARAMETER) {
             processMultipleLines();
             return;
         }
 
-        char cur = codeLineContainer.getNextSymbol();
+        char cur = container.getShifted();
 
-        if (CharsUtil.isTab(cur))
+        if (isTab(cur))
             addProcessedToken(TokenType.TAB, 1);
-        else if (CharsUtil.isWhitespace(cur))
+        else if (isWhitespace(cur))
             addProcessedToken(TokenType.WHITESPACE, 1);
-        else if ((cur == '-' || cur == '+') && !codeLineContainer.isEnded(1) && CharsUtil.isDigit(codeLineContainer.getNextSymbol(1)))
+        else if (isDigit(cur) || ((cur == '-' || cur == '+') && !container.isEnded(1) && isDigit(container.getShifted(1))))
             processNumber();
-        else if (!codeLineContainer.isEnded(1) && CharsUtil.isComment(cur, codeLineContainer.getNextSymbol(1)))
+        else if (!container.isEnded(1) && isComment(cur, container.getShifted(1)))
             processComment();
-        else if (CharsUtil.isIdentifierSymbol(cur))
+        else if (isIdentifierSymbol(cur))
             processIdentifier();
-        else if (CharsUtil.isSingleQuote(cur))
+        else if (isSingleQuote(cur))
             processSingleQuote();
-        else if (CharsUtil.isDoubleQuote(cur))
+        else if (isDoubleQuote(cur))
             processDoubleQuote();
-        else if (CharsUtil.isOperator(cur))
+        else if (isOperator(cur))
             processOperator();
         else {
             // TODO check next value in debugger
-            char next = codeLineContainer.getNextSymbol();
-            InvalidToken error = new InvalidToken(codeLineContainer.getRow(), codeLineContainer.getColumn(),
-                    InvalidToken.INVALID_TOKEN_MSG, String.valueOf(next));
+            char next = container.getShifted();
+            InvalidToken error = new InvalidToken(container.getRow(), container.getColumn(),
+                    "", String.valueOf(next));
             this.errorTokens.add(error);
 
-            codeLineContainer.incrementColumn();
+            container.incrementColumn();
         }
     }
 
     private void processOperator() {
-        var tokenPair = operatorsAutomata.findToken(codeLineContainer.getCodeLine(),
-                codeLineContainer.getColumn());
+        var tokenPair = operatorsAutomata.findToken(container.getCodeLine(),
+                container.getColumn());
         TokenType tokenType = tokenPair.getFirst();
         int tokenEndPos = tokenPair.getSecond();
 
+        if (tokenType == TokenType.OPEN_PARENTHESIS)
+            this.lexerState = LexerState.PARAMETER;
+        else if (this.lexerState == LexerState.PARAMETER && tokenType == TokenType.CLOSE_PARENTHESIS)
+            this.lexerState = LexerState.DEFAULT;
+
         if (tokenType == TokenType.INVALID_TOKEN) {
-            processError(tokenEndPos - codeLineContainer.getColumn());
+            processError(tokenEndPos - container.getColumn());
         } else {
-            addProcessedToken(tokenType, tokenEndPos - codeLineContainer.getColumn());
+            addProcessedToken(tokenType, tokenEndPos - container.getColumn());
         }
     }
 
     private void processSingleQuote() {
         this.lexerState = LexerState.CHAR;
-        char next = codeLineContainer.getNextSymbol(1);
+        char next = container.getShifted(1);
         if (next == '\\') {
             // Handling escaped characters
-            if (CharsUtil.isEscapeCharacter(next) && !codeLineContainer.isEnded(3) && codeLineContainer.getNextSymbol(3) == '\'') {
+            if (isEscapeCharacter(next) && !container.isEnded(3) && container.getShifted(3) == '\'') {
                 addProcessedToken(TokenType.CharValue, 4);
             } else {
                 processError(1);
             }
-        } else if (!codeLineContainer.isEnded(2) && codeLineContainer.getNextSymbol(2) == '\'') {
+        } else if (!container.isEnded(2) && container.getShifted(2) == '\'') {
             addProcessedToken(TokenType.CharValue, 3);
         } else {
             processError(1);
@@ -125,9 +130,9 @@ public class Lexer {
         char cur;
         int pos = 0;
 
-        while (!codeLineContainer.isEnded(pos + 1)) {
+        while (!container.isEnded(pos + 1)) {
             pos++;
-            cur = codeLineContainer.getNextSymbol();
+            cur = container.getShifted(pos);
             if (lexerState == LexerState.STRING) {
                 if (cur == '\\') {
                     this.lexerState = LexerState.BACK_SLASH;
@@ -140,19 +145,18 @@ public class Lexer {
             }
         }
 
-        // TODO: implement correct handling of error
-        processError(codeLineContainer.getColumn());
+        processError(0, "Missing ending double quote.");
     }
 
     private void processIdentifier() {
         int pos = 0;
         char cur;
-        while (!codeLineContainer.isEnded(pos + 1)) {
+        while (!container.isEnded(pos + 1)) {
             pos++;
-            cur = codeLineContainer.getNextSymbol(pos);
-            if (CharsUtil.isEndOfToken(cur)) {
-                var tokenPair = keywordsAutomata.findToken(codeLineContainer.getCodeLine(),
-                        codeLineContainer.getColumn());
+            cur = container.getShifted(pos);
+            if (isEndOfToken(cur)) {
+                var tokenPair = keywordsAutomata.findToken(container.getCodeLine(),
+                        container.getColumn());
                 TokenType tokenType = tokenPair.getFirst();
 
                 // means that the Lexer has found an identifier
@@ -164,53 +168,49 @@ public class Lexer {
                 return;
             }
         }
-        // TODO: MAY BE TO DO after cycle condition
+
+        TokenType tokenType = keywordsAutomata.findToken(container.getCodeLine(), container.getColumn()).getFirst();
+        pos++;
+        if (tokenType == TokenType.INVALID_TOKEN)
+            addProcessedToken(TokenType.IDENTIFIER, pos);
+        else
+            addProcessedToken(tokenType, pos);
     }
 
     private void processNumber() {
-        this.lexerState = LexerState.INTEGER;
-
-        char cur = codeLineContainer.getNextSymbol();
         int pos = 0;
 
-        // handling singed number
-        if (cur == '-' || cur == '+') {
-            cur = codeLineContainer.getNextSymbol(1);
+        // handling signed number
+        if (container.getShifted() == '-' || container.getShifted() == '+')
+            pos++;
+
+        while (!container.isEnded(pos) && isDigit(container.getShifted(pos))) {
             pos++;
         }
 
-        var firstNumberPart = readNumber(cur, pos);
-        cur = firstNumberPart.getFirst();
-        pos = firstNumberPart.getSecond();
-
-        if (CharsUtil.isDot(cur)) {
+        if (!container.isEnded(pos) && isDot(container.getShifted(pos))) {
             this.lexerState = LexerState.DOUBLE;
             pos++;
-            cur = codeLineContainer.getNextSymbol(pos);
+
+            while (!container.isEnded(pos) && isDigit(container.getShifted(pos))) {
+                pos++;
+            }
+        } else if (lexerState != LexerState.PARAMETER && !container.isEnded(pos) && isComma(container.getShifted(pos))) {
+            processError(container.getColumn(), container.getColumn() + pos + 1,
+                    "Invalid float value format.");
+            return;
         }
 
-        var secondNumberPart = readNumber(cur, pos);
-        cur = secondNumberPart.getFirst();
-        pos = secondNumberPart.getSecond();
-
-        if (codeLineContainer.isEnded(pos + 1) || CharsUtil.isEndOfToken(cur)) {
+        if (container.isEnded(pos) || isEndOfToken(container.getShifted(pos))) {
             TokenType tokenType;
             if (lexerState == LexerState.DOUBLE)
                 tokenType = TokenType.DoubleValue;
             else
                 tokenType = TokenType.IntValue;
-            addProcessedToken(tokenType, pos + 1);
+            addProcessedToken(tokenType, pos);
         } else {
             processError(pos);
         }
-    }
-
-    private Pair<Character, Integer> readNumber(char cur, int pos) {
-        while (!codeLineContainer.isEnded(pos + 1) && CharsUtil.isDigit(cur)) {
-            pos++;
-            cur = codeLineContainer.getNextSymbol(pos);
-        }
-        return Pair.of(cur, pos);
     }
 
     private void processMultipleLines() {
@@ -222,9 +222,9 @@ public class Lexer {
     }
 
     private void processComment() {
-        char next = codeLineContainer.getNextSymbol(1);
+        char next = container.getShifted(1);
         if (next == '/') {
-            int tokenLength = codeLineContainer.getCodeLine().length() - codeLineContainer.getColumn();
+            int tokenLength = container.getCodeLine().length() - container.getColumn();
             addProcessedToken(TokenType.SINGLE_LINE_COMMENT, tokenLength);
         } else {
             processMultilineComment();
@@ -237,9 +237,9 @@ public class Lexer {
         char cur;
         int pos = 0;
 
-        while (!codeLineContainer.isEnded(pos + 1)) {
+        while (!container.isEnded(pos + 1)) {
             pos++;
-            cur = codeLineContainer.getNextSymbol(pos);
+            cur = container.getShifted(pos);
 
             if (lexerState == LexerState.MULTI_LINE_COMMENT) {
                 if (cur == '*') {
@@ -259,46 +259,64 @@ public class Lexer {
         if (lexerCache.isNonEmpty())
             lexerCache.add("\\n");
 
-        lexerCache.add(codeLineContainer.getCodeLine().substring(codeLineContainer.getColumn(),
-                codeLineContainer.getColumn() + pos));
-        codeLineContainer.setColumn(codeLineContainer.getColumn() + pos + 1);
+        lexerCache.add(container.getCodeLine().substring(container.getColumn(),
+                container.getColumn() + pos));
+        container.setColumn(container.getColumn() + pos + 1);
         this.lexerState = LexerState.MULTI_LINE_COMMENT;
     }
 
-    private void processError(int pos) {
+    private void processError(int pos, String... msg) {
         this.lexerState = LexerState.ERROR;
-        char cur = codeLineContainer.getNextSymbol(pos);
-        while (CharsUtil.isEndOfToken(cur) || !codeLineContainer.isEnded(pos + 1)) {
+        char cur = container.getShifted(pos);
+        while (isEndOfToken(cur) || !container.isEnded(pos + 1)) {
             pos++;
-            cur = codeLineContainer.getNextSymbol(pos);
+            cur = container.getShifted(pos);
         }
 
-        String invalidToken = codeLineContainer.getCodeLine().substring(codeLineContainer.getColumn(), pos);
-        InvalidToken error = new InvalidToken(codeLineContainer.getRow(), codeLineContainer.getColumn(),
-                InvalidToken.INVALID_TOKEN_MSG, invalidToken);
+        String invalidToken = container.getCodeLine().substring(container.getColumn(), container.getColumn() + pos + 1);
+        InvalidToken error = new InvalidToken(container.getRow(), container.getColumn(),
+                (msg != null && msg.length > 0) ? msg[0] : "", invalidToken);
         this.errorTokens.add(error);
+        processErrorCommon(container.getColumn() + pos + 1);
+    }
+
+    private void processError(int start, int end, String msg) {
+        this.lexerState = LexerState.ERROR;
+        String invalidToken = container.getCodeLine().substring(start, end);
+
+        InvalidToken error = new InvalidToken(container.getRow(), container.getColumn(),
+                msg, invalidToken);
+        this.errorTokens.add(error);
+        processErrorCommon(end);
+    }
+
+    private void processErrorCommon(int start) {
+        this.container.setColumn(start);
+        this.lexerState = LexerState.DEFAULT;
     }
 
     private void addProcessedToken(TokenType tokenType, int tokenLength) {
-        String tableItem = codeLineContainer.getCodeLine().substring(codeLineContainer.getColumn(),
-                codeLineContainer.getColumn() + tokenLength);
+        String tableItem = container.getCodeLine().substring(container.getColumn(),
+                container.getColumn() + tokenLength);
         addProcessedTokenHelper(tokenType, tokenLength, tableItem);
     }
 
     private void addProcessedMultilineToken(TokenType tokenType, int tokenLength) {
-        String tableItem = lexerCache.getCache() + codeLineContainer.getCodeLine().substring(codeLineContainer.getColumn(),
-                codeLineContainer.getColumn() + tokenLength);
+        String tableItem = lexerCache.getCache() + container.getCodeLine().substring(container.getColumn(),
+                container.getColumn() + tokenLength);
         addProcessedTokenHelper(tokenType, tokenLength, tableItem);
         this.lexerCache.clear();
     }
 
     private void addProcessedTokenHelper(TokenType tokenType, int tokenLength, String tableItem) {
-        ProcessedToken token = new ProcessedToken(codeLineContainer.getRow(), codeLineContainer.getColumn(),
+        ProcessedToken token = new ProcessedToken(container.getRow(), container.getColumn(),
                 tokenType, this.table.size());
         this.table.add(tableItem);
-        codeLineContainer.setColumn(codeLineContainer.getColumn() + tokenLength);
+        container.setColumn(container.getColumn() + tokenLength);
         this.processedTokens.add(token);
-        this.lexerState = LexerState.DEFAULT;
+
+        if (this.lexerState != LexerState.PARAMETER)
+            this.lexerState = LexerState.DEFAULT;
     }
 
     public List<String> getTable() {

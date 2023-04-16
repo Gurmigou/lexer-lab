@@ -16,12 +16,12 @@ public class CodeLineContainer {
         return isEnded(0);
     }
 
-    public char getNextSymbol(int shift) {
+    public char getShifted(int shift) {
         return codeLine.charAt(column + shift);
     }
 
-    public char getNextSymbol() {
-        return getNextSymbol(0);
+    public char getShifted() {
+        return getShifted(0);
     }
 
     public int getRow() {

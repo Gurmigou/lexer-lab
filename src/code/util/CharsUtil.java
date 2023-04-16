@@ -17,6 +17,10 @@ public class CharsUtil {
         return c == '.';
     }
 
+    public static boolean isComma(char c) {
+        return c == ',';
+    }
+
     public static boolean isWhitespace(char c) {
         return c == ' ';
     }
