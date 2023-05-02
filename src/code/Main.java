@@ -73,22 +73,25 @@ public class Main {
                 writer.write(formatter.toString());
             }
 
+            writer.write(consoleWriter(lexer));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void consoleWriter(Lexer lexer) {
-        System.out.println("--- Tokens ---");
-        printPretty(lexer.getTable(), lexer.getProcessedTokens());
-
-        System.out.println("\n--- Errors ---");
-        printPrettyErrors(lexer.getErrorTokens());
+    private static String consoleWriter(Lexer lexer) {
+        return "\n\n\n-------------------------------- Tokens: Line by line --------------------------------\n" +
+                printPretty(lexer.getTable(), lexer.getProcessedTokens()) +
+                "\n\n-------------------------------- Errors: Line by line --------------------------------\n" +
+                printPrettyErrors(lexer.getErrorTokens());
     }
 
-    private static void printPretty(List<String> lexerTable, List<ProcessedToken> processedTokens) {
+    private static String printPretty(List<String> lexerTable, List<ProcessedToken> processedTokens) {
         if (processedTokens.isEmpty())
-            return;
+            return "";
+
+        var result = new StringBuilder();
 
         var groupedList = processedTokens.stream()
                 .collect(Collectors.groupingBy(ProcessedToken::getRow))
@@ -109,13 +112,16 @@ public class Main {
             }
 
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-            System.out.println(stringBuilder);
+            result.append(stringBuilder).append('\n');
         }
+
+        result.delete(result.length() - 1, result.length());
+        return result.toString();
     }
 
-    private static void printPrettyErrors(List<InvalidToken> invalidTokens) {
+    private static String printPrettyErrors(List<InvalidToken> invalidTokens) {
         if (invalidTokens.isEmpty())
-            return;
+            return "";
 
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -128,6 +134,6 @@ public class Main {
         }
 
         stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
-        System.out.println(stringBuilder);
+        return stringBuilder.toString();
     }
 }

@@ -1,9 +1,396 @@
 --------------------------------------- Tokens ---------------------------------------
 Token                                (row | column)					Value
 --------------------------------------------------------------------------------------
+IMPORT                               	0 | 0        				import
+IDENTIFIER                           	0 | 7        				java
+DOT                                  	0 | 11       				.
+IDENTIFIER                           	0 | 12       				lang
+DOT                                  	0 | 16       				.
+IDENTIFIER                           	0 | 17       				reflect
+DOT                                  	0 | 24       				.
+IDENTIFIER                           	0 | 25       				Array
+OBJECT                               	2 | 0        				object
+IDENTIFIER                           	2 | 7        				ScalaExample
+OPEN_BRACE                           	2 | 20       				{
+SINGLE_LINE_COMMENT                  	3 | 2        				// 1. Class definition
+CLASS                                	4 | 2        				class
+IDENTIFIER                           	4 | 8        				Person
+OPEN_PARENTHESIS                     	4 | 14       				(
+VAL                                  	4 | 15       				val
+IDENTIFIER                           	4 | 19       				name
+TYPE_COLON_OPERATOR                  	4 | 23       				:
+String                               	4 | 25       				String
+COMMA                                	4 | 31       				,
+VAR                                  	4 | 33       				var
+IDENTIFIER                           	4 | 37       				age
+TYPE_COLON_OPERATOR                  	4 | 40       				:
+Int                                  	4 | 42       				Int
+CLOSE_PARENTHESIS                    	4 | 45       				)
+OPEN_BRACE                           	4 | 47       				{
+SINGLE_LINE_COMMENT                  	5 | 4        				// 2. Method definition
+DEF                                  	6 | 4        				def
+IDENTIFIER                           	6 | 8        				greet
+OPEN_PARENTHESIS                     	6 | 13       				(
+CLOSE_PARENTHESIS                    	6 | 14       				)
+TYPE_COLON_OPERATOR                  	6 | 15       				:
+Unit                                 	6 | 17       				Unit
+ASSIGN                               	6 | 22       				=
+OPEN_BRACE                           	6 | 24       				{
+IDENTIFIER                           	7 | 6        				println
+OPEN_PARENTHESIS                     	7 | 13       				(
+S_INTERPOLATOR                       	7 | 14       				s
+DOUBLE_QUOTE                         	7 | 15       				"
+StringValue                          	7 | 16       				Hello, my name is 
+OPEN_EXPRESSION                      	7 | 34       				$
+IDENTIFIER                           	7 | 35       				name
+StringValue                          	7 | 39       				, and I am 
+OPEN_EXPRESSION                      	7 | 50       				$
+IDENTIFIER                           	7 | 51       				age
+StringValue                          	7 | 54       				 years old.
+DOUBLE_QUOTE                         	7 | 65       				"
+CLOSE_PARENTHESIS                    	7 | 66       				)
+CLOSE_BRACE                          	8 | 4        				}
+CLOSE_BRACE                          	9 | 2        				}
+VAL                                  	11 | 2       				val
+IDENTIFIER                           	11 | 6       				requiredValue
+ASSIGN                               	11 | 20      				=
+DoubleValue                          	11 | 22      				-251.210411
+SINGLE_LINE_COMMENT                  	13 | 2       				// 4. Class inheritance and implementing a trait
+CLASS                                	14 | 2       				class
+IDENTIFIER                           	14 | 8       				Dog
+OPEN_PARENTHESIS                     	14 | 11      				(
+VAL                                  	14 | 12      				val
+IDENTIFIER                           	14 | 16      				breed
+TYPE_COLON_OPERATOR                  	14 | 21      				:
+String                               	14 | 23      				String
+CLOSE_PARENTHESIS                    	14 | 29      				)
+EXTENDS                              	14 | 31      				extends
+IDENTIFIER                           	14 | 39      				Animal
+OPEN_BRACE                           	14 | 46      				{
+DEF                                  	15 | 4       				def
+IDENTIFIER                           	15 | 8       				makeSound
+OPEN_PARENTHESIS                     	15 | 17      				(
+CLOSE_PARENTHESIS                    	15 | 18      				)
+TYPE_COLON_OPERATOR                  	15 | 19      				:
+Unit                                 	15 | 21      				Unit
+ASSIGN                               	15 | 26      				=
+OPEN_BRACE                           	15 | 28      				{
+IDENTIFIER                           	16 | 6       				println
+OPEN_PARENTHESIS                     	16 | 13      				(
+S_INTERPOLATOR                       	16 | 14      				s
+DOUBLE_QUOTE                         	16 | 15      				"
+StringValue                          	16 | 16      				The 
+OPEN_EXPRESSION                      	16 | 20      				$
+IDENTIFIER                           	16 | 21      				breed
+StringValue                          	16 | 26      				 dog barks.
+DOUBLE_QUOTE                         	16 | 37      				"
+CLOSE_PARENTHESIS                    	16 | 38      				)
+CLOSE_BRACE                          	17 | 4       				}
+CLOSE_BRACE                          	18 | 2       				}
+SINGLE_LINE_COMMENT                  	20 | 2       				// 5. Case class definition
+CASE                                 	21 | 2       				case
+CLASS                                	21 | 7       				class
+IDENTIFIER                           	21 | 13      				Point
+OPEN_PARENTHESIS                     	21 | 18      				(
+IDENTIFIER                           	21 | 19      				x
+TYPE_COLON_OPERATOR                  	21 | 20      				:
+Int                                  	21 | 22      				Int
+COMMA                                	21 | 25      				,
+IDENTIFIER                           	21 | 27      				y
+TYPE_COLON_OPERATOR                  	21 | 28      				:
+Int                                  	21 | 30      				Int
+CLOSE_PARENTHESIS                    	21 | 33      				)
+SINGLE_LINE_COMMENT                  	23 | 2       				// 6. Companion object
+OBJECT                               	24 | 2       				object
+IDENTIFIER                           	24 | 9       				Person
+OPEN_BRACE                           	24 | 16      				{
+DEF                                  	25 | 4       				def
+IDENTIFIER                           	25 | 8       				apply
+OPEN_PARENTHESIS                     	25 | 13      				(
+IDENTIFIER                           	25 | 14      				name
+TYPE_COLON_OPERATOR                  	25 | 18      				:
+String                               	25 | 20      				String
+COMMA                                	25 | 26      				,
+IDENTIFIER                           	25 | 28      				age
+TYPE_COLON_OPERATOR                  	25 | 31      				:
+Int                                  	25 | 33      				Int
+CLOSE_PARENTHESIS                    	25 | 36      				)
+TYPE_COLON_OPERATOR                  	25 | 37      				:
+IDENTIFIER                           	25 | 39      				Person
+ASSIGN                               	25 | 46      				=
+NEW                                  	25 | 48      				new
+IDENTIFIER                           	25 | 52      				Person
+OPEN_PARENTHESIS                     	25 | 58      				(
+IDENTIFIER                           	25 | 59      				name
+COMMA                                	25 | 63      				,
+IDENTIFIER                           	25 | 65      				age
+CLOSE_PARENTHESIS                    	25 | 68      				)
+CLOSE_BRACE                          	26 | 2       				}
+SINGLE_LINE_COMMENT                  	28 | 2       				// 7. Main method
+DEF                                  	29 | 2       				def
+IDENTIFIER                           	29 | 6       				main
+OPEN_PARENTHESIS                     	29 | 10      				(
+IDENTIFIER                           	29 | 11      				args
+TYPE_COLON_OPERATOR                  	29 | 15      				:
+IDENTIFIER                           	29 | 17      				Array
+OPEN_BRACKET                         	29 | 22      				[
+String                               	29 | 23      				String
+CLOSE_BRACKET                        	29 | 29      				]
+CLOSE_PARENTHESIS                    	29 | 30      				)
+TYPE_COLON_OPERATOR                  	29 | 31      				:
+Unit                                 	29 | 33      				Unit
+ASSIGN                               	29 | 38      				=
+OPEN_BRACE                           	29 | 40      				{
+SINGLE_LINE_COMMENT                  	30 | 4       				// 8. Instantiating a class
+VAL                                  	31 | 4       				val
+IDENTIFIER                           	31 | 8       				john
+ASSIGN                               	31 | 13      				=
+NEW                                  	31 | 15      				new
+IDENTIFIER                           	31 | 19      				Person
+OPEN_PARENTHESIS                     	31 | 25      				(
+StringValue                          	31 | 26      				"John"
+COMMA                                	31 | 32      				,
+IntValue                             	31 | 34      				30
+CLOSE_PARENTHESIS                    	31 | 36      				)
+SINGLE_LINE_COMMENT                  	33 | 4       				// 9. Calling a method
+IDENTIFIER                           	34 | 4       				john
+DOT                                  	34 | 8       				.
+IDENTIFIER                           	34 | 9       				greet
+OPEN_PARENTHESIS                     	34 | 14      				(
+CLOSE_PARENTHESIS                    	34 | 15      				)
+SINGLE_LINE_COMMENT                  	36 | 4       				// 10. Instantiating a class with a companion object
+VAL                                  	37 | 4       				val
+IDENTIFIER                           	37 | 8       				jane
+ASSIGN                               	37 | 13      				=
+IDENTIFIER                           	37 | 15      				Person
+OPEN_PARENTHESIS                     	37 | 21      				(
+StringValue                          	37 | 22      				"Jane"
+COMMA                                	37 | 28      				,
+IntValue                             	37 | 30      				28
+CLOSE_PARENTHESIS                    	37 | 32      				)
+IDENTIFIER                           	38 | 4       				jane
+DOT                                  	38 | 8       				.
+IDENTIFIER                           	38 | 9       				greet
+OPEN_PARENTHESIS                     	38 | 14      				(
+CLOSE_PARENTHESIS                    	38 | 15      				)
+SINGLE_LINE_COMMENT                  	40 | 4       				// 11. Anonymous function (lambda)
+VAL                                  	41 | 4       				val
+IDENTIFIER                           	41 | 8       				square
+ASSIGN                               	41 | 15      				=
+OPEN_PARENTHESIS                     	41 | 17      				(
+IDENTIFIER                           	41 | 18      				x
+TYPE_COLON_OPERATOR                  	41 | 19      				:
+Int                                  	41 | 21      				Int
+CLOSE_PARENTHESIS                    	41 | 24      				)
+RIGHT_EQUAL_ARROW                    	41 | 26      				=>
+IDENTIFIER                           	41 | 29      				x
+MULTIPLY                             	41 | 31      				*
+IDENTIFIER                           	41 | 33      				x
+SINGLE_LINE_COMMENT                  	43 | 4       				// 12. Higher-order function
+DEF                                  	44 | 4       				def
+IDENTIFIER                           	44 | 8       				applyFunc
+OPEN_PARENTHESIS                     	44 | 17      				(
+IDENTIFIER                           	44 | 18      				func
+TYPE_COLON_OPERATOR                  	44 | 22      				:
+Int                                  	44 | 24      				Int
+RIGHT_EQUAL_ARROW                    	44 | 28      				=>
+Int                                  	44 | 31      				Int
+COMMA                                	44 | 34      				,
+IDENTIFIER                           	44 | 36      				x
+TYPE_COLON_OPERATOR                  	44 | 37      				:
+Int                                  	44 | 39      				Int
+CLOSE_PARENTHESIS                    	44 | 42      				)
+TYPE_COLON_OPERATOR                  	44 | 43      				:
+Int                                  	44 | 45      				Int
+ASSIGN                               	44 | 49      				=
+IDENTIFIER                           	44 | 51      				func
+OPEN_PARENTHESIS                     	44 | 55      				(
+IDENTIFIER                           	44 | 56      				x
+CLOSE_PARENTHESIS                    	44 | 57      				)
+SINGLE_LINE_COMMENT                  	46 | 4       				// 13. Using a higher-order function
+IDENTIFIER                           	47 | 4       				println
+OPEN_PARENTHESIS                     	47 | 11      				(
+S_INTERPOLATOR                       	47 | 12      				s
+DOUBLE_QUOTE                         	47 | 13      				"
+StringValue                          	47 | 14      				Square of 4 is: 
+OPEN_EXPRESSION                      	47 | 30      				$
+OPEN_BRACE                           	47 | 31      				{
+IDENTIFIER                           	47 | 32      				applyFunc
+OPEN_PARENTHESIS                     	47 | 41      				(
+IDENTIFIER                           	47 | 42      				square
+COMMA                                	47 | 48      				,
+IntValue                             	47 | 50      				4
+CLOSE_PARENTHESIS                    	47 | 51      				)
+CLOSE_BRACE                          	47 | 52      				}
+DOUBLE_QUOTE                         	47 | 53      				"
+CLOSE_PARENTHESIS                    	47 | 54      				)
+SINGLE_LINE_COMMENT                  	49 | 4       				// 14. Pattern matching
+VAL                                  	50 | 4       				val
+IDENTIFIER                           	50 | 8       				point
+ASSIGN                               	50 | 14      				=
+IDENTIFIER                           	50 | 16      				Point
+OPEN_PARENTHESIS                     	50 | 21      				(
+IntValue                             	50 | 22      				2
+COMMA                                	50 | 23      				,
+IntValue                             	50 | 25      				3
+CLOSE_PARENTHESIS                    	50 | 26      				)
+IDENTIFIER                           	51 | 4       				point
+MATCH                                	51 | 10      				match
+OPEN_BRACE                           	51 | 16      				{
+CASE                                 	52 | 6       				case
+IDENTIFIER                           	52 | 11      				Point
+OPEN_PARENTHESIS                     	52 | 16      				(
+IntValue                             	52 | 17      				0
+COMMA                                	52 | 18      				,
+IntValue                             	52 | 20      				0
+CLOSE_PARENTHESIS                    	52 | 21      				)
+RIGHT_EQUAL_ARROW                    	52 | 23      				=>
+IDENTIFIER                           	52 | 26      				println
+OPEN_PARENTHESIS                     	52 | 33      				(
+StringValue                          	52 | 34      				"Origin"
+CLOSE_PARENTHESIS                    	52 | 42      				)
+CASE                                 	53 | 6       				case
+IDENTIFIER                           	53 | 11      				Point
+OPEN_PARENTHESIS                     	53 | 16      				(
+IDENTIFIER                           	53 | 17      				x
+COMMA                                	53 | 18      				,
+IDENTIFIER                           	53 | 20      				y
+CLOSE_PARENTHESIS                    	53 | 21      				)
+RIGHT_EQUAL_ARROW                    	53 | 23      				=>
+IDENTIFIER                           	53 | 26      				println
+OPEN_PARENTHESIS                     	53 | 33      				(
+S_INTERPOLATOR                       	53 | 34      				s
+DOUBLE_QUOTE                         	53 | 35      				"
+StringValue                          	53 | 36      				Point at (
+OPEN_EXPRESSION                      	53 | 46      				$
+IDENTIFIER                           	53 | 47      				x
+StringValue                          	53 | 48      				, 
+OPEN_EXPRESSION                      	53 | 50      				$
+IDENTIFIER                           	53 | 51      				y
+StringValue                          	53 | 52      				)
+DOUBLE_QUOTE                         	53 | 53      				"
+CLOSE_PARENTHESIS                    	53 | 54      				)
+CLOSE_BRACE                          	54 | 4       				}
+SINGLE_LINE_COMMENT                  	56 | 4       				// 15. For-comprehension
+VAL                                  	57 | 4       				val
+IDENTIFIER                           	57 | 8       				numbers
+ASSIGN                               	57 | 16      				=
+IDENTIFIER                           	57 | 18      				List
+OPEN_PARENTHESIS                     	57 | 22      				(
+IntValue                             	57 | 23      				1
+COMMA                                	57 | 24      				,
+IntValue                             	57 | 26      				2
+COMMA                                	57 | 27      				,
+IntValue                             	57 | 29      				3
+COMMA                                	57 | 30      				,
+IntValue                             	57 | 32      				4
+COMMA                                	57 | 33      				,
+IntValue                             	57 | 35      				5
+CLOSE_PARENTHESIS                    	57 | 36      				)
+VAL                                  	58 | 4       				val
+DO                                   	58 | 8       				doubledNumbers
+ASSIGN                               	58 | 23      				=
+FOR                                  	58 | 25      				for
+OPEN_PARENTHESIS                     	58 | 29      				(
+IDENTIFIER                           	58 | 30      				n
+LEFT_ARROW                           	58 | 32      				<-
+IDENTIFIER                           	58 | 35      				numbers
+CLOSE_PARENTHESIS                    	58 | 42      				)
+YIELD                                	58 | 44      				yield
+IDENTIFIER                           	58 | 50      				n
+MULTIPLY                             	58 | 52      				*
+IntValue                             	58 | 54      				2
+IDENTIFIER                           	59 | 4       				println
+OPEN_PARENTHESIS                     	59 | 11      				(
+S_INTERPOLATOR                       	59 | 12      				s
+DOUBLE_QUOTE                         	59 | 13      				"
+StringValue                          	59 | 14      				Doubled numbers: 
+OPEN_EXPRESSION                      	59 | 31      				$
+DO                                   	59 | 32      				doubledNumbers
+DOUBLE_QUOTE                         	59 | 46      				"
+CLOSE_PARENTHESIS                    	59 | 47      				)
+SINGLE_LINE_COMMENT                  	61 | 4       				// 16. Creating an instance of a class implementing a trait
+VAL                                  	62 | 4       				val
+DO                                   	62 | 8       				dog
+ASSIGN                               	62 | 12      				=
+NEW                                  	62 | 14      				new
+IDENTIFIER                           	62 | 18      				Dog
+OPEN_PARENTHESIS                     	62 | 21      				(
+StringValue                          	62 | 22      				"Golden Retriever"
+CLOSE_PARENTHESIS                    	62 | 40      				)
+DO                                   	63 | 4       				dog
+DOT                                  	63 | 7       				.
+IDENTIFIER                           	63 | 8       				makeSound
+OPEN_PARENTHESIS                     	63 | 17      				(
+CLOSE_PARENTHESIS                    	63 | 18      				)
+CLOSE_BRACE                          	64 | 2       				}
+VAL                                  	66 | 2       				val
+IDENTIFIER                           	66 | 6       				invalidValue
+ASSIGN                               	66 | 19      				=
+CLOSE_BRACE                          	67 | 0       				}
 
 
 --------------------------------------- Errors ---------------------------------------
 Invalid symbol                       (row | column)					Error Message
 --------------------------------------------------------------------------------------
-/* a\nb                              	2 | 0        				Missing closing of Multiline comment.
+2,3                                  	66 | 21      				Invalid float value format.
+
+
+
+-------------------------------- Tokens: Line by line --------------------------------
+0: IMPORT[import], WHITESPACE[ ], IDENTIFIER[java], DOT[.], IDENTIFIER[lang], DOT[.], IDENTIFIER[reflect], DOT[.], IDENTIFIER[Array]
+2: OBJECT[object], WHITESPACE[ ], IDENTIFIER[ScalaExample], WHITESPACE[ ], OPEN_BRACE[{]
+3: WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 1. Class definition]
+4: WHITESPACE[ ], WHITESPACE[ ], CLASS[class], WHITESPACE[ ], IDENTIFIER[Person], OPEN_PARENTHESIS[(], VAL[val], WHITESPACE[ ], IDENTIFIER[name], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], String[String], COMMA[,], WHITESPACE[ ], VAR[var], WHITESPACE[ ], IDENTIFIER[age], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], Int[Int], CLOSE_PARENTHESIS[)], WHITESPACE[ ], OPEN_BRACE[{]
+5: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 2. Method definition]
+6: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], DEF[def], WHITESPACE[ ], IDENTIFIER[greet], OPEN_PARENTHESIS[(], CLOSE_PARENTHESIS[)], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], Unit[Unit], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ], OPEN_BRACE[{]
+7: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], IDENTIFIER[println], OPEN_PARENTHESIS[(], S_INTERPOLATOR[s], DOUBLE_QUOTE["], StringValue[Hello, my name is ], OPEN_EXPRESSION[$], IDENTIFIER[name], StringValue[, and I am ], OPEN_EXPRESSION[$], IDENTIFIER[age], StringValue[ years old.], DOUBLE_QUOTE["], CLOSE_PARENTHESIS[)]
+8: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], CLOSE_BRACE[}]
+9: WHITESPACE[ ], WHITESPACE[ ], CLOSE_BRACE[}]
+11: WHITESPACE[ ], WHITESPACE[ ], VAL[val], WHITESPACE[ ], IDENTIFIER[requiredValue], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ], DoubleValue[-251.210411]
+13: WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 4. Class inheritance and implementing a trait]
+14: WHITESPACE[ ], WHITESPACE[ ], CLASS[class], WHITESPACE[ ], IDENTIFIER[Dog], OPEN_PARENTHESIS[(], VAL[val], WHITESPACE[ ], IDENTIFIER[breed], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], String[String], CLOSE_PARENTHESIS[)], WHITESPACE[ ], EXTENDS[extends], WHITESPACE[ ], IDENTIFIER[Animal], WHITESPACE[ ], OPEN_BRACE[{]
+15: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], DEF[def], WHITESPACE[ ], IDENTIFIER[makeSound], OPEN_PARENTHESIS[(], CLOSE_PARENTHESIS[)], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], Unit[Unit], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ], OPEN_BRACE[{]
+16: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], IDENTIFIER[println], OPEN_PARENTHESIS[(], S_INTERPOLATOR[s], DOUBLE_QUOTE["], StringValue[The ], OPEN_EXPRESSION[$], IDENTIFIER[breed], StringValue[ dog barks.], DOUBLE_QUOTE["], CLOSE_PARENTHESIS[)]
+17: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], CLOSE_BRACE[}]
+18: WHITESPACE[ ], WHITESPACE[ ], CLOSE_BRACE[}]
+20: WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 5. Case class definition]
+21: WHITESPACE[ ], WHITESPACE[ ], CASE[case], WHITESPACE[ ], CLASS[class], WHITESPACE[ ], IDENTIFIER[Point], OPEN_PARENTHESIS[(], IDENTIFIER[x], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], Int[Int], COMMA[,], WHITESPACE[ ], IDENTIFIER[y], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], Int[Int], CLOSE_PARENTHESIS[)]
+23: WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 6. Companion object]
+24: WHITESPACE[ ], WHITESPACE[ ], OBJECT[object], WHITESPACE[ ], IDENTIFIER[Person], WHITESPACE[ ], OPEN_BRACE[{]
+25: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], DEF[def], WHITESPACE[ ], IDENTIFIER[apply], OPEN_PARENTHESIS[(], IDENTIFIER[name], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], String[String], COMMA[,], WHITESPACE[ ], IDENTIFIER[age], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], Int[Int], CLOSE_PARENTHESIS[)], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], IDENTIFIER[Person], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ], NEW[new], WHITESPACE[ ], IDENTIFIER[Person], OPEN_PARENTHESIS[(], IDENTIFIER[name], COMMA[,], WHITESPACE[ ], IDENTIFIER[age], CLOSE_PARENTHESIS[)]
+26: WHITESPACE[ ], WHITESPACE[ ], CLOSE_BRACE[}]
+28: WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 7. Main method]
+29: WHITESPACE[ ], WHITESPACE[ ], DEF[def], WHITESPACE[ ], IDENTIFIER[main], OPEN_PARENTHESIS[(], IDENTIFIER[args], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], IDENTIFIER[Array], OPEN_BRACKET[[], String[String], CLOSE_BRACKET[]], CLOSE_PARENTHESIS[)], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], Unit[Unit], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ], OPEN_BRACE[{]
+30: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 8. Instantiating a class]
+31: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], VAL[val], WHITESPACE[ ], IDENTIFIER[john], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ], NEW[new], WHITESPACE[ ], IDENTIFIER[Person], OPEN_PARENTHESIS[(], StringValue["John"], COMMA[,], WHITESPACE[ ], IntValue[30], CLOSE_PARENTHESIS[)]
+33: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 9. Calling a method]
+34: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], IDENTIFIER[john], DOT[.], IDENTIFIER[greet], OPEN_PARENTHESIS[(], CLOSE_PARENTHESIS[)]
+36: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 10. Instantiating a class with a companion object]
+37: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], VAL[val], WHITESPACE[ ], IDENTIFIER[jane], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ], IDENTIFIER[Person], OPEN_PARENTHESIS[(], StringValue["Jane"], COMMA[,], WHITESPACE[ ], IntValue[28], CLOSE_PARENTHESIS[)]
+38: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], IDENTIFIER[jane], DOT[.], IDENTIFIER[greet], OPEN_PARENTHESIS[(], CLOSE_PARENTHESIS[)]
+40: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 11. Anonymous function (lambda)]
+41: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], VAL[val], WHITESPACE[ ], IDENTIFIER[square], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ], OPEN_PARENTHESIS[(], IDENTIFIER[x], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], Int[Int], CLOSE_PARENTHESIS[)], WHITESPACE[ ], RIGHT_EQUAL_ARROW[=>], WHITESPACE[ ], IDENTIFIER[x], WHITESPACE[ ], MULTIPLY[*], WHITESPACE[ ], IDENTIFIER[x]
+43: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 12. Higher-order function]
+44: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], DEF[def], WHITESPACE[ ], IDENTIFIER[applyFunc], OPEN_PARENTHESIS[(], IDENTIFIER[func], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], Int[Int], WHITESPACE[ ], RIGHT_EQUAL_ARROW[=>], WHITESPACE[ ], Int[Int], COMMA[,], WHITESPACE[ ], IDENTIFIER[x], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], Int[Int], CLOSE_PARENTHESIS[)], TYPE_COLON_OPERATOR[:], WHITESPACE[ ], Int[Int], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ], IDENTIFIER[func], OPEN_PARENTHESIS[(], IDENTIFIER[x], CLOSE_PARENTHESIS[)]
+46: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 13. Using a higher-order function]
+47: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], IDENTIFIER[println], OPEN_PARENTHESIS[(], S_INTERPOLATOR[s], DOUBLE_QUOTE["], StringValue[Square of 4 is: ], OPEN_EXPRESSION[$], OPEN_BRACE[{], IDENTIFIER[applyFunc], OPEN_PARENTHESIS[(], IDENTIFIER[square], COMMA[,], WHITESPACE[ ], IntValue[4], CLOSE_PARENTHESIS[)], CLOSE_BRACE[}], DOUBLE_QUOTE["], CLOSE_PARENTHESIS[)]
+49: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 14. Pattern matching]
+50: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], VAL[val], WHITESPACE[ ], IDENTIFIER[point], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ], IDENTIFIER[Point], OPEN_PARENTHESIS[(], IntValue[2], COMMA[,], WHITESPACE[ ], IntValue[3], CLOSE_PARENTHESIS[)]
+51: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], IDENTIFIER[point], WHITESPACE[ ], MATCH[match], WHITESPACE[ ], OPEN_BRACE[{]
+52: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], CASE[case], WHITESPACE[ ], IDENTIFIER[Point], OPEN_PARENTHESIS[(], IntValue[0], COMMA[,], WHITESPACE[ ], IntValue[0], CLOSE_PARENTHESIS[)], WHITESPACE[ ], RIGHT_EQUAL_ARROW[=>], WHITESPACE[ ], IDENTIFIER[println], OPEN_PARENTHESIS[(], StringValue["Origin"], CLOSE_PARENTHESIS[)]
+53: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], CASE[case], WHITESPACE[ ], IDENTIFIER[Point], OPEN_PARENTHESIS[(], IDENTIFIER[x], COMMA[,], WHITESPACE[ ], IDENTIFIER[y], CLOSE_PARENTHESIS[)], WHITESPACE[ ], RIGHT_EQUAL_ARROW[=>], WHITESPACE[ ], IDENTIFIER[println], OPEN_PARENTHESIS[(], S_INTERPOLATOR[s], DOUBLE_QUOTE["], StringValue[Point at (], OPEN_EXPRESSION[$], IDENTIFIER[x], StringValue[, ], OPEN_EXPRESSION[$], IDENTIFIER[y], StringValue[)], DOUBLE_QUOTE["], CLOSE_PARENTHESIS[)]
+54: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], CLOSE_BRACE[}]
+56: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 15. For-comprehension]
+57: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], VAL[val], WHITESPACE[ ], IDENTIFIER[numbers], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ], IDENTIFIER[List], OPEN_PARENTHESIS[(], IntValue[1], COMMA[,], WHITESPACE[ ], IntValue[2], COMMA[,], WHITESPACE[ ], IntValue[3], COMMA[,], WHITESPACE[ ], IntValue[4], COMMA[,], WHITESPACE[ ], IntValue[5], CLOSE_PARENTHESIS[)]
+58: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], VAL[val], WHITESPACE[ ], DO[doubledNumbers], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ], FOR[for], WHITESPACE[ ], OPEN_PARENTHESIS[(], IDENTIFIER[n], WHITESPACE[ ], LEFT_ARROW[<-], WHITESPACE[ ], IDENTIFIER[numbers], CLOSE_PARENTHESIS[)], WHITESPACE[ ], YIELD[yield], WHITESPACE[ ], IDENTIFIER[n], WHITESPACE[ ], MULTIPLY[*], WHITESPACE[ ], IntValue[2]
+59: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], IDENTIFIER[println], OPEN_PARENTHESIS[(], S_INTERPOLATOR[s], DOUBLE_QUOTE["], StringValue[Doubled numbers: ], OPEN_EXPRESSION[$], DO[doubledNumbers], DOUBLE_QUOTE["], CLOSE_PARENTHESIS[)]
+61: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], SINGLE_LINE_COMMENT[// 16. Creating an instance of a class implementing a trait]
+62: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], VAL[val], WHITESPACE[ ], DO[dog], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ], NEW[new], WHITESPACE[ ], IDENTIFIER[Dog], OPEN_PARENTHESIS[(], StringValue["Golden Retriever"], CLOSE_PARENTHESIS[)]
+63: WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], WHITESPACE[ ], DO[dog], DOT[.], IDENTIFIER[makeSound], OPEN_PARENTHESIS[(], CLOSE_PARENTHESIS[)]
+64: WHITESPACE[ ], WHITESPACE[ ], CLOSE_BRACE[}]
+66: WHITESPACE[ ], WHITESPACE[ ], VAL[val], WHITESPACE[ ], IDENTIFIER[invalidValue], WHITESPACE[ ], ASSIGN[=], WHITESPACE[ ]
+67: CLOSE_BRACE[}]
+
+-------------------------------- Errors: Line by line --------------------------------
+66|21: Invalid token: "2,3". Invalid float value format.
