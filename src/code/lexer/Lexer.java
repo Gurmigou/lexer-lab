@@ -54,6 +54,15 @@ public class Lexer {
 
             container.incrementRow();
         }
+
+        handleEndStateProblem();
+    }
+
+    private void handleEndStateProblem() {
+        if (lexerState.getCurState() == LexerState.MULTI_LINE_COMMENT) {
+            container.setColumn(0);
+            processError(0, "Missing closing of Multiline comment.");
+        }
     }
 
     private void processNextToken() {
@@ -255,7 +264,7 @@ public class Lexer {
                 pos++;
             }
         } else if (!lexerState.isInStateChain(LexerState.PARAMETER) && !container.isEnded(pos) && isComma(container.getShifted(pos))) {
-            processError(container.getColumn(), container.getColumn() + pos + 1,
+            processError(container.getColumn(), container.getColumn() + pos + 2,
                     "Invalid float value format.");
             return;
         }
@@ -268,7 +277,7 @@ public class Lexer {
                 tokenType = TokenType.IntValue;
             addProcessedToken(tokenType, pos);
         } else {
-            processError(pos);
+            processError(pos, "Identifier / Number format error.");
         }
     }
 
@@ -291,7 +300,7 @@ public class Lexer {
     }
 
     private void processMultilineComment() {
-        this.lexerState.transitToNextState(LexerState.MULTI_LINE_COMMENT);
+        this.lexerState.transitToNextStateIfNotIn(LexerState.MULTI_LINE_COMMENT);
 
         char cur;
         int pos = 0;
@@ -317,8 +326,7 @@ public class Lexer {
         if (lexerCache.isNonEmpty())
             lexerCache.add("\\n");
 
-        lexerCache.add(container.getCodeLine().substring(container.getColumn(),
-                container.getColumn() + pos));
+        lexerCache.add(container.getCodeLine().substring(container.getColumn(), container.getColumn() + pos + 1));
         container.setColumn(container.getColumn() + pos + 1);
         this.lexerState.transitToNextStateIfNotIn(LexerState.MULTI_LINE_COMMENT);
     }
@@ -327,13 +335,26 @@ public class Lexer {
         this.lexerState.transitToNextState(LexerState.ERROR);
         char cur = container.getShifted(pos);
 
-        // Todo: changed || to &&
-        while (isEndOfToken(cur) && !container.isEnded(pos + 1)) {
+        while (isEndOfToken(cur) || !container.isEnded(pos + 1)) {
             pos++;
             cur = container.getShifted(pos);
         }
 
         String invalidToken = container.getCodeLine().substring(container.getColumn(), container.getColumn() + pos + 1);
+
+        if (lexerCache.isNonEmpty()) {
+            try {
+                String cache = lexerCache.getCache();
+                String cacheEnd = cache.substring(cache.length() - invalidToken.length());
+                if (cacheEnd.equals(invalidToken))
+                    invalidToken = cache;
+                else
+                    invalidToken = lexerCache.getCache() + invalidToken;
+            } catch (Exception e) {
+                invalidToken = lexerCache.getCache() + invalidToken;
+            }
+        }
+
         InvalidToken error = new InvalidToken(container.getRow(), container.getColumn(),
                 (msg != null && msg.length > 0) ? msg[0] : "", invalidToken);
         this.errorTokens.add(error);
@@ -353,6 +374,7 @@ public class Lexer {
     private void processErrorCommon(int start) {
         this.container.setColumn(start);
         this.lexerState.backToPrevState();
+        this.lexerCache.clear();
     }
 
     private void addProcessedToken(TokenType tokenType, int tokenLength) {

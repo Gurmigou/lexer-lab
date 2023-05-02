@@ -14,4 +14,12 @@ public class InvalidToken extends AbstractToken {
     public String getFullErrorMessage() {
         return INVALID_TOKEN_MSG + "\"" + invalidSymbol + "\". " + errorMessage;
     }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public String getInvalidSymbol() {
+        return invalidSymbol;
+    }
 }
