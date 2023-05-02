@@ -16,6 +16,8 @@ public class Main {
     private static final String INPUT_FILE_PATH = "src/resources/scala/Input.scala";
     private static final String OUTPUT_FILE_PATH = "src/resources/scala/Output.txt";
 
+    // Attention! Use file Input.scala in resources/scala folder as input file. Write any Scala code you want in it.
+    // The output will be written in Output.txt file in the same folder.
     public static void main(String[] args) {
         Lexer lexer = new Lexer();
         try {
