@@ -23,7 +23,6 @@ public class Main {
         try {
             lexer.processTokenInFile(INPUT_FILE_PATH);
 
-            // consoleWriter(lexer);
             tokensTableFileWriter(lexer);
         } catch (IOException e) {
             e.printStackTrace();
